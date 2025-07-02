@@ -69,6 +69,7 @@ public:
 #endif
 #if MODE_AUTOLAND_ENABLED
         AUTOLAND      = 26,
+        LEVEL_FLIGHT = 27, // used for level flight in fixed wing
 #endif
 
     // Mode number 30 reserved for "offboard" for external/lua control.
@@ -1034,6 +1035,18 @@ protected:
     void restore_mode(const char *reason, ModeReason modereason);
 
     bool _enter() override;
+};
+
+class ModeLevelFlight : public Mode {
+public:
+    Number mode_number() const override;
+    const char *name() const override;
+    const char *name4() const override;
+    void update() override;
+    void run() override;
+    bool _enter() override;
+    bool use_throttle_limits() const override;
+    bool use_battery_compensation() const override;
 };
 
 #endif

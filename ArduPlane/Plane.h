@@ -174,6 +174,7 @@ public:
     friend class ModeTakeoff;
     friend class ModeThermal;
     friend class ModeLoiterAltQLand;
+    void level_flight_stabilize();
 #if MODE_AUTOLAND_ENABLED
     friend class ModeAutoLand;
 #endif
@@ -1335,6 +1336,7 @@ public:
 };
 
 extern Plane plane;
+extern ModeLevelFlight mode_levelflight;
 
 using AP_HAL::millis;
 using AP_HAL::micros;

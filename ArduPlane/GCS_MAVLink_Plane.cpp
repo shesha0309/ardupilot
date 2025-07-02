@@ -39,6 +39,7 @@ uint8_t GCS_MAVLINK_Plane::base_mode() const
     case Mode::Number::FLY_BY_WIRE_A:
     case Mode::Number::AUTOTUNE:
     case Mode::Number::FLY_BY_WIRE_B:
+    case Mode::Number::LEVEL_FLIGHT:
 #if HAL_QUADPLANE_ENABLED
     case Mode::Number::QSTABILIZE:
     case Mode::Number::QHOVER:
@@ -1352,6 +1353,7 @@ uint8_t GCS_MAVLINK_Plane::send_available_mode(uint8_t index) const
 #if MODE_AUTOLAND_ENABLED
         &plane.mode_autoland,
 #endif
+        &mode_levelflight,
     };
 
     const uint8_t fw_mode_count = ARRAY_SIZE(fw_modes);

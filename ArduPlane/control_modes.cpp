@@ -34,6 +34,9 @@ Mode *Plane::mode_from_mode_num(const enum Mode::Number num)
     case Mode::Number::AUTOTUNE:
         ret = &mode_autotune;
         break;
+    case Mode::Number::LEVEL_FLIGHT:
+        ret = &mode_levelflight;
+        break;
     case Mode::Number::AUTO:
         ret = &mode_auto;
         break;

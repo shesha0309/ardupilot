@@ -22,6 +22,7 @@
 
 #include "Plane.h"
 
+ModeLevelFlight mode_levelflight;
 #define FORCE_VERSION_H_INCLUDE
 #include "version.h"
 #undef FORCE_VERSION_H_INCLUDE
@@ -1083,6 +1084,16 @@ void Plane::update_quicktune(void)
 /*
   constructor for main Plane class
  */
+
+ void Plane::level_flight_stabilize()
+{
+    // Call the basic stabilize methods, excluding yaw
+    stabilize_roll();
+    stabilize_pitch();
+
+    // Note: We skip stabilize_yaw() and altitude control on purpose for LEVEL_FLIGHT
+}
+
 Plane::Plane(void)
 {
     // C++11 doesn't allow in-class initialisation of bitfields

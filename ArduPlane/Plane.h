@@ -175,6 +175,7 @@ public:
     friend class ModeThermal;
     friend class ModeLoiterAltQLand;
     void level_flight_stabilize();
+    int32_t get_rel_altitude_cm() const;
 #if MODE_AUTOLAND_ENABLED
     friend class ModeAutoLand;
 #endif

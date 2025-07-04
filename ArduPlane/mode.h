@@ -1047,6 +1047,8 @@ public:
     bool _enter() override;
     bool use_throttle_limits() const override;
     bool use_battery_compensation() const override;
+private:
+    int32_t _target_altitude_cm = 0;
 };
 
 #endif

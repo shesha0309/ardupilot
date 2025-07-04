@@ -1049,6 +1049,8 @@ public:
     bool use_battery_compensation() const override;
 private:
     int32_t _target_altitude_cm = 0;
+    uint32_t _start_time_ms = 0;
+    bool _phase2_started = false;
 };
 
 #endif

@@ -176,6 +176,8 @@ public:
     friend class ModeLoiterAltQLand;
     void level_flight_stabilize();
     int32_t get_rel_altitude_cm() const;
+    void set_nav_roll_cd(int32_t roll_cd);
+    int32_t nav_roll_cd;
 #if MODE_AUTOLAND_ENABLED
     friend class ModeAutoLand;
 #endif
@@ -669,7 +671,7 @@ private:
 
     // Navigation control variables
     // The instantaneous desired bank angle.  Hundredths of a degree
-    int32_t nav_roll_cd;
+    
 
     // The instantaneous desired pitch angle.  Hundredths of a degree
     int32_t nav_pitch_cd;

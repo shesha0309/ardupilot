@@ -1044,13 +1044,14 @@ public:
     const char *name4() const override;
     void update() override;
     void run() override;
+    
+    // New overrides for altitude hold
+    bool does_auto_throttle() const override { return true; }
+    bool use_throttle_limits() const override { return true; }
+    bool use_battery_compensation() const override { return true; }
+    
+protected:
     bool _enter() override;
-    bool use_throttle_limits() const override;
-    bool use_battery_compensation() const override;
-private:
-    int32_t _target_altitude_cm = 0;
-    uint32_t _start_time_ms = 0;
-    bool _phase2_started = false;
 };
 
 #endif

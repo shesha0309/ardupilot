@@ -175,9 +175,13 @@ public:
     friend class ModeThermal;
     friend class ModeLoiterAltQLand;
     void level_flight_stabilize();
-    int32_t get_rel_altitude_cm() const;
-    void set_nav_roll_cd(int32_t roll_cd);
+    void stabilize_stick_mixing_fbw();
+    void stabilize_roll();
+    void stabilize_pitch();
+    void calc_throttle();
+    void set_target_altitude_current(void);
     int32_t nav_roll_cd;
+    int32_t nav_pitch_cd;
 #if MODE_AUTOLAND_ENABLED
     friend class ModeAutoLand;
 #endif
@@ -214,7 +218,7 @@ private:
     RC_Channel *channel_airbrake;
 
     // scaled roll limit based on pitch
-    int32_t roll_limit_cd;
+    
     float pitch_limit_min;
 
     // flight modes convenience array
@@ -672,9 +676,9 @@ private:
     // Navigation control variables
     // The instantaneous desired bank angle.  Hundredths of a degree
     
-
+    int32_t roll_limit_cd;
     // The instantaneous desired pitch angle.  Hundredths of a degree
-    int32_t nav_pitch_cd;
+    
 
     // the aerodynamic load factor. This is calculated from the demanded
     // roll before the roll is clipped, using 1/cos(nav_roll)
@@ -907,7 +911,7 @@ private:
     int32_t get_RTL_altitude_cm() const;
     float relative_ground_altitude(bool use_rangefinder_if_available);
     float relative_ground_altitude(bool use_rangefinder_if_available, bool use_terrain_if_available);
-    void set_target_altitude_current(void);
+    
     void set_target_altitude_location(const Location &loc);
     int32_t relative_target_altitude_cm(void);
     void change_target_altitude(int32_t change_cm);
@@ -934,17 +938,17 @@ private:
     void rangefinder_terrain_correction(float &height);
 #endif
     void stabilize();
-    void calc_throttle();
+    
     void calc_nav_roll();
     void calc_nav_pitch();
     float calc_speed_scaler(void);
     float get_speed_scaler(void) const { return surface_speed_scaler; }
     bool stick_mixing_enabled(void);
-    void stabilize_roll();
+    
     float stabilize_roll_get_roll_out();
-    void stabilize_pitch();
+    
     float stabilize_pitch_get_pitch_out();
-    void stabilize_stick_mixing_fbw();
+    
     void stabilize_yaw();
     int16_t calc_nav_yaw_coordinated();
     int16_t calc_nav_yaw_course(void);

@@ -1100,14 +1100,6 @@ Plane::Plane(void)
     auto_state.takeoff_complete = true;
 }
 
-int32_t Plane::get_rel_altitude_cm() const {
-    return static_cast<int32_t>(relative_altitude * 100.0f); // convert meters to cm
-}
-
-void Plane::set_nav_roll_cd(int32_t roll_cd) {
-    nav_roll_cd = roll_cd;
-}
-
 Plane plane;
 AP_Vehicle& vehicle = plane;
 

@@ -47,7 +47,6 @@ void GCS_Plane::update_vehicle_sensor_status_flags(void)
 #endif  // HAL_QUADPLANE_ENABLED
     case Mode::Number::FLY_BY_WIRE_B:
     case Mode::Number::CRUISE:
-    case Mode::Number::LEVEL_FLIGHT:
         rate_controlled = true;
         attitude_stabilized = true;
         break;
@@ -74,6 +73,7 @@ void GCS_Plane::update_vehicle_sensor_status_flags(void)
     case Mode::Number::LOITER_ALT_QLAND:
 #endif
     case Mode::Number::THERMAL:
+    case Mode::Number::LEVEL_FLIGHT:
         rate_controlled = true;
         attitude_stabilized = true;
         control_sensors_enabled |= MAV_SYS_STATUS_SENSOR_YAW_POSITION;

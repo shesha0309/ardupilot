@@ -8,7 +8,7 @@ const char *ModeLevelFlight::name4() const { return "LVFL"; }
 
 void ModeLevelFlight::update() {
     // Set targets for level attitude (0 degrees roll and pitch)
-    plane.nav_roll_cd = 0;
+
     plane.nav_pitch_cd = 0;
     
     // Allow pilot input to override level attitude when stick moved
@@ -17,6 +17,11 @@ void ModeLevelFlight::update() {
     
     // Altitude hold is handled automatically by TECS when does_auto_throttle() = true
     // Target altitude was set in _enter() method
+
+    plane.nav_roll_cd  = plane.roll_limit_cd / 3;
+    plane.update_load_factor();
+    plane.calc_nav_pitch();
+    plane.calc_throttle();
 }
 
 void ModeLevelFlight::run() {
@@ -39,6 +44,8 @@ bool ModeLevelFlight::_enter() {
     
     // **ALTITUDE HOLD**: Capture current altitude as target
     plane.set_target_altitude_current();
-    
+        // the altitude to circle at is taken from the current altitude
+    plane.next_WP_loc = plane.current_loc;
+
     return true;
 }

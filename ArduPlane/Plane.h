@@ -180,8 +180,16 @@ public:
     void stabilize_pitch();
     void calc_throttle();
     void set_target_altitude_current(void);
+    void calc_nav_roll();
+    void calc_nav_pitch();
+    void navigate();
+    void set_next_WP(const Location &loc);
     int32_t nav_roll_cd;
+    int32_t roll_limit_cd;
     int32_t nav_pitch_cd;
+    void update_load_factor(void);
+    Location next_WP_loc {};
+    Location current_loc {};
 #if MODE_AUTOLAND_ENABLED
     friend class ModeAutoLand;
 #endif
@@ -676,7 +684,7 @@ private:
     // Navigation control variables
     // The instantaneous desired bank angle.  Hundredths of a degree
     
-    int32_t roll_limit_cd;
+    
     // The instantaneous desired pitch angle.  Hundredths of a degree
     
 
@@ -778,10 +786,10 @@ private:
     Location prev_WP_loc {};
 
     // The plane's current location
-    Location current_loc {};
+    
 
     // The location of the current/active waypoint.  Used for altitude ramp, track following and loiter calculations.
-    Location next_WP_loc {};
+    
 
     // Altitude control
     struct {
@@ -905,7 +913,7 @@ private:
 
     // Attitude.cpp
     void adjust_nav_pitch_throttle(void);
-    void update_load_factor(void);
+    
     void adjust_altitude_target();
     void setup_alt_slope(void);
     int32_t get_RTL_altitude_cm() const;
@@ -939,8 +947,8 @@ private:
 #endif
     void stabilize();
     
-    void calc_nav_roll();
-    void calc_nav_pitch();
+    
+    
     float calc_speed_scaler(void);
     float get_speed_scaler(void) const { return surface_speed_scaler; }
     bool stick_mixing_enabled(void);
@@ -980,7 +988,7 @@ private:
     void load_parameters(void) override;
 
     // commands_logic.cpp
-    void set_next_WP(const Location &loc);
+    
     void do_RTL(int32_t alt);
     bool verify_takeoff();
     bool verify_loiter_unlim(const AP_Mission::Mission_Command &cmd);
@@ -1116,7 +1124,7 @@ private:
     // navigation.cpp
     void loiter_angle_reset(void);
     void loiter_angle_update(void);
-    void navigate();
+    
     void check_home_alt_change(void);
     void calc_airspeed_errors();
     float mode_auto_target_airspeed_cm();

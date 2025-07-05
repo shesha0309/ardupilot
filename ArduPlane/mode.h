@@ -1045,13 +1045,40 @@ public:
     void update() override;
     void run() override;
     
-    // New overrides for altitude hold
+    // Altitude hold functionality
     bool does_auto_throttle() const override { return true; }
+    bool does_auto_navigation() const override { return true; }
     bool use_throttle_limits() const override { return true; }
     bool use_battery_compensation() const override { return true; }
     
 protected:
     bool _enter() override;
+
+private:
+    // L-shape pattern state machine
+    enum class LShapeState {
+        FIRST_LEG,    // Flying the first straight leg
+        TURNING,      // Making the 90-degree turn  
+        SECOND_LEG,   // Flying the second straight leg
+        COMPLETE      // L pattern completed, hold level flight
+    };
+    
+    LShapeState l_shape_state;
+    Location l_shape_waypoints[3];  // Start, turn point, end point
+    uint8_t current_waypoint_index;
+    Location current_position;      // Store current position locally
+    
+    // L-shape pattern parameters
+    static constexpr float FIRST_LEG_DISTANCE_M = 200.0f;
+    static constexpr float SECOND_LEG_DISTANCE_M = 150.0f;
+    static constexpr bool TURN_RIGHT = true;
+    static constexpr float WAYPOINT_RADIUS_M = 25.0f;
+    
+    // Helper methods
+    void calculate_l_shape_waypoints();
+    void advance_to_next_waypoint();
+    bool reached_current_waypoint();
+    void update_current_position();
 };
 
 #endif

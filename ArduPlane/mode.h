@@ -1044,6 +1044,7 @@ public:
     const char *name4() const override;
     void update() override;
     void run() override;
+    void navigate() override;
     
     // Altitude hold functionality
     bool does_auto_throttle() const override { return true; }
@@ -1055,30 +1056,13 @@ protected:
     bool _enter() override;
 
 private:
-    // L-shape pattern state machine
-    enum class LShapeState {
-        FIRST_LEG,    // Flying the first straight leg
-        TURNING,      // Making the 90-degree turn  
-        SECOND_LEG,   // Flying the second straight leg
-        COMPLETE      // L pattern completed, hold level flight
+    // Simple turn state machine
+    enum class TurnState {
+        TURNING_RIGHT,    // Making a 90-degree right turn
+        LEVEL_FLIGHT      // Maintaining level flight after turn
     };
     
-    LShapeState l_shape_state;
-    Location l_shape_waypoints[3];  // Start, turn point, end point
-    uint8_t current_waypoint_index;
-    Location current_position;      // Store current position locally
-    
-    // L-shape pattern parameters
-    static constexpr float FIRST_LEG_DISTANCE_M = 200.0f;
-    static constexpr float SECOND_LEG_DISTANCE_M = 150.0f;
-    static constexpr bool TURN_RIGHT = true;
-    static constexpr float WAYPOINT_RADIUS_M = 25.0f;
-    
-    // Helper methods
-    void calculate_l_shape_waypoints();
-    void advance_to_next_waypoint();
-    bool reached_current_waypoint();
-    void update_current_position();
+    TurnState turn_state;
+    float target_heading_deg;  // Target heading after 90-degree right turn
 };
-
 #endif

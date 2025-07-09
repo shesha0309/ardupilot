@@ -173,23 +173,15 @@ public:
     friend class ModeQAutotune;
     friend class ModeTakeoff;
     friend class ModeThermal;
+    friend class ModeLevelFlight;  
     friend class ModeLoiterAltQLand;
-    void level_flight_stabilize();
-    void stabilize_stick_mixing_fbw();
-    void stabilize_roll();
-    void stabilize_pitch();
-    void calc_throttle();
-    void set_target_altitude_current(void);
-    void calc_nav_roll();
-    void calc_nav_pitch();
-    void navigate();
-    void set_next_WP(const Location &loc);
-    int32_t nav_roll_cd;
-    int32_t roll_limit_cd;
-    int32_t nav_pitch_cd;
-    void update_load_factor(void);
-    Location next_WP_loc {};
+    Location prev_WP_loc {};
+
+    // The plane's current location
     Location current_loc {};
+
+    // The location of the current/active waypoint.  Used for altitude ramp, track following and loiter calculations.
+    Location next_WP_loc {};
 #if MODE_AUTOLAND_ENABLED
     friend class ModeAutoLand;
 #endif
@@ -226,7 +218,7 @@ private:
     RC_Channel *channel_airbrake;
 
     // scaled roll limit based on pitch
-    
+    int32_t roll_limit_cd;
     float pitch_limit_min;
 
     // flight modes convenience array
@@ -355,6 +347,7 @@ private:
 #if HAL_SOARING_ENABLED
     ModeThermal mode_thermal;
 #endif
+    ModeLevelFlight mode_levelflight;
 
 #if AP_QUICKTUNE_ENABLED
     AP_Quicktune quicktune;
@@ -683,10 +676,10 @@ private:
 
     // Navigation control variables
     // The instantaneous desired bank angle.  Hundredths of a degree
-    
-    
+    int32_t nav_roll_cd;
+
     // The instantaneous desired pitch angle.  Hundredths of a degree
-    
+    int32_t nav_pitch_cd;
 
     // the aerodynamic load factor. This is calculated from the demanded
     // roll before the roll is clipped, using 1/cos(nav_roll)
@@ -783,12 +776,6 @@ private:
     const Location &home = ahrs.get_home();
 
     // The location of the previous waypoint.  Used for track following and altitude ramp calculations
-    Location prev_WP_loc {};
-
-    // The plane's current location
-    
-
-    // The location of the current/active waypoint.  Used for altitude ramp, track following and loiter calculations.
     
 
     // Altitude control
@@ -913,13 +900,14 @@ private:
 
     // Attitude.cpp
     void adjust_nav_pitch_throttle(void);
-    
+    void update_load_factor(void);
+    void level_flight_stabilize();
     void adjust_altitude_target();
     void setup_alt_slope(void);
     int32_t get_RTL_altitude_cm() const;
     float relative_ground_altitude(bool use_rangefinder_if_available);
     float relative_ground_altitude(bool use_rangefinder_if_available, bool use_terrain_if_available);
-    
+    void set_target_altitude_current(void);
     void set_target_altitude_location(const Location &loc);
     int32_t relative_target_altitude_cm(void);
     void change_target_altitude(int32_t change_cm);
@@ -946,17 +934,17 @@ private:
     void rangefinder_terrain_correction(float &height);
 #endif
     void stabilize();
-    
-    
-    
+    void calc_throttle();
+    void calc_nav_roll();
+    void calc_nav_pitch();
     float calc_speed_scaler(void);
     float get_speed_scaler(void) const { return surface_speed_scaler; }
     bool stick_mixing_enabled(void);
-    
+    void stabilize_roll();
     float stabilize_roll_get_roll_out();
-    
+    void stabilize_pitch();
     float stabilize_pitch_get_pitch_out();
-    
+    void stabilize_stick_mixing_fbw();
     void stabilize_yaw();
     int16_t calc_nav_yaw_coordinated();
     int16_t calc_nav_yaw_course(void);
@@ -988,7 +976,7 @@ private:
     void load_parameters(void) override;
 
     // commands_logic.cpp
-    
+    void set_next_WP(const Location &loc);
     void do_RTL(int32_t alt);
     bool verify_takeoff();
     bool verify_loiter_unlim(const AP_Mission::Mission_Command &cmd);
@@ -1124,7 +1112,7 @@ private:
     // navigation.cpp
     void loiter_angle_reset(void);
     void loiter_angle_update(void);
-    
+    void navigate();
     void check_home_alt_change(void);
     void calc_airspeed_errors();
     float mode_auto_target_airspeed_cm();
@@ -1343,6 +1331,14 @@ public:
 
 #endif // AP_SCRIPTING_ENABLED
 
+    // ADD YOUR ACCESSOR METHODS HERE (before the tkoff_option_is_set method)
+    float get_wp_distance() const { return auto_state.wp_distance; }
+    void set_wp_distance(float distance) { auto_state.wp_distance = distance; }
+    float get_wp_proportion() const { return auto_state.wp_proportion; }
+    void set_wp_proportion(float proportion) { auto_state.wp_proportion = proportion; }
+    void set_next_wp_crosstrack(bool enable) { auto_state.next_wp_crosstrack = enable; }
+    bool get_next_wp_crosstrack() const { return auto_state.next_wp_crosstrack; }
+
     bool tkoff_option_is_set(AP_FixedWing::TakeoffOption option) const {
         return (aparm.takeoff_options & int32_t(option)) != 0;
     }
@@ -1351,7 +1347,6 @@ public:
 };
 
 extern Plane plane;
-extern ModeLevelFlight mode_levelflight;
 
 using AP_HAL::millis;
 using AP_HAL::micros;
